@@ -115,7 +115,7 @@ flowchart LR
   LB --> GW[API Gateway]
 
   GW -->|POST /api/v1/urls| W[Write Service]
-  GW -->|GET /{code}| R[Redirect Service]
+  GW -->|GET /code| R[Redirect Service]
 
   W --> ID[ID Generator<br/>Snowflake]
   W --> DB[(Primary Store<br/>code → long_url)]
