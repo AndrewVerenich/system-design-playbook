@@ -1,0 +1,13 @@
+# Created by .ignore support plugin (hsz.mobi)
+# IntelliJ project files
+build
+bin
+.idea
+*.iml
+*.mv.db
+*.trace.db
+logs
+out
+gen
+docs/index.html
+docs/index.pdf
