@@ -70,7 +70,7 @@
 
 **Артефакты:**
 - [BRIEF.md](./rounds/01-pastebin/BRIEF.md) — условие раунда
-- [DESIGN.md](./rounds/01-pastebin/DESIGN.md) — твой дизайн
+- [DESIGN.md](./rounds/01-pastebin/DESIGN.md) — дизайн
 - [REVIEW.md](./rounds/01-pastebin/REVIEW.md) — review после сдачи
 
 **Статус:** reviewed — см. [REVIEW.md](./rounds/01-pastebin/REVIEW.md)
