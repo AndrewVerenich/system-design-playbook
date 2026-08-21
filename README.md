@@ -9,8 +9,9 @@
 
 Краткий список — ссылки ведут к полному описанию в [разделе ниже](#rounds-overview).
 
-0. [url-shortener](#0-url-shortener) — сокращение ссылок, redirect hot path, генерация кода, cache + KV storage *(образец)*  
-1. *(следующие раунды: rate limiter, pastebin, notification service, chat, …)*
+0. [url-shortener](#0-url-shortener) — сокращение ссылок *(образец)*  
+1. [pastebin](#1-pastebin) — текстовые paste, TTL, read/write path **← текущий раунд**  
+2. *(далее: rate limiter, notification service, chat, …)*
 
 ---
 
@@ -22,7 +23,7 @@
 4. **Revise** — правка до accepted-версии.
 
 Правило: на новых раундах сначала свой вариант, потом разбор.  
-**Round 00** содержит полный **образец** (`DESIGN.sample.md`) — ориентир по глубине и структуре.
+**Round 00** — полный образец. **Round 01** — твоё первое задание.
 
 ## Структура репозитория
 
@@ -32,11 +33,11 @@ system-design-playbook/
 ├── _template/
 │   └── DESIGN.md
 └── rounds/
-    └── 00-url-shortener/
+    ├── 00-url-shortener/   ← образец
+    └── 01-pastebin/        ← твоё задание
         ├── BRIEF.md
-        ├── DESIGN.sample.md   ← образец полного разбора
+        ├── DESIGN.md
         ├── diagrams/
-        ├── DESIGN.md          ← твой драфт (на новых раундах)
         └── REVIEW.md
 ```
 
@@ -73,3 +74,39 @@ system-design-playbook/
 - Unique ID generation
 - Hot key / viral traffic
 - Consistency vs latency на redirect path
+
+---
+
+### 1. [pastebin](./rounds/01-pastebin/BRIEF.md)
+
+Проектирование Pastebin-like сервиса: сохранение текста, выдача по короткому id, TTL, опционально burn-after-read.
+
+**Описание:**
+- Первое **самостоятельное** задание (без готового sample-решения).
+- Простая система для отработки каркаса интервью end-to-end.
+- Фокус: где хранить тело paste, expiry, id generation, гонки при burn-after-read.
+
+**Артефакты:**
+- [BRIEF.md](./rounds/01-pastebin/BRIEF.md) — условие раунда
+- [DESIGN.md](./rounds/01-pastebin/DESIGN.md) — твой дизайн
+- [REVIEW.md](./rounds/01-pastebin/REVIEW.md) — review после сдачи
+
+**Статус:** reviewed — см. [REVIEW.md](./rounds/01-pastebin/REVIEW.md)
+
+**Фокус компетенций:**
+- Interview structure end-to-end
+- Blob vs DB storage trade-off
+- TTL / expiration
+- Concurrent read semantics
+
+---
+
+## Диаграммы
+
+- В образцах — **Mermaid** (версионируется в git, рендерится на GitHub).
+- В своих раундах можно дополнительно класть **PNG из Miro** в `diagrams/`.
+
+## Связь с обучением
+
+Playbook = практика Large Scale Design / Interview Mastery.  
+Теория эволюции систем (Foundation → DB → Cache → Scale → Messaging → …) — в отдельном learning-треке; сюда сдаём законченные дизайн-кейсы.
