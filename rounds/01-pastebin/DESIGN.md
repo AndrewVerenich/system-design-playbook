@@ -75,19 +75,7 @@ peak-непрерывный месяц (50/s) ≈ 648 GB — upper bound, не b
 
 ## 5. High-level архитектура
 
-Схема: [`diagrams/high-level.png`](./diagrams/high-level.png)
-
-```text
-Client
-  → Nginx (TLS, static JS/CSS/HTML)
-  → Application Gateway (rate limiting)
-  → Paste Service
-       ├─ ID generator (random 12 + retry)
-       ├─ Redis (cache)
-       ├─ MySQL master (writes + cleanup deletes)
-       └─ MySQL replica (read on cache miss)
-  Cleanup cron (hourly) → delete expired on master
-```
+Схема: ![high-level](./diagrams/high-level.png)
 
 **Write path:**
 1. `POST /pastes` → Nginx → Gateway (rate limit) → Paste Service  
