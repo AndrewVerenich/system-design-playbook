@@ -10,8 +10,7 @@
 Краткий список — ссылки ведут к полному описанию в [разделе ниже](#rounds-overview).
 
 0. [url-shortener](#0-url-shortener) — сокращение ссылок *(образец)*  
-1. [pastebin](#1-pastebin) — текстовые paste, TTL, read/write path **← текущий раунд**  
-2. *(далее: rate limiter, notification service, chat, …)*
+1. [pastebin](#1-pastebin) — текстовые paste, TTL, read/write path 
 
 ---
 
@@ -24,22 +23,6 @@
 
 Правило: на новых раундах сначала свой вариант, потом разбор.  
 **Round 00** — полный образец. **Round 01** — твоё первое задание.
-
-## Структура репозитория
-
-```text
-system-design-playbook/
-├── README.md
-├── _template/
-│   └── DESIGN.md
-└── rounds/
-    ├── 00-url-shortener/   ← образец
-    └── 01-pastebin/        ← твоё задание
-        ├── BRIEF.md
-        ├── DESIGN.md
-        ├── diagrams/
-        └── REVIEW.md
-```
 
 Шаблон: [`_template/DESIGN.md`](./_template/DESIGN.md).
 
@@ -82,7 +65,6 @@ system-design-playbook/
 Проектирование Pastebin-like сервиса: сохранение текста, выдача по короткому id, TTL, опционально burn-after-read.
 
 **Описание:**
-- Первое **самостоятельное** задание (без готового sample-решения).
 - Простая система для отработки каркаса интервью end-to-end.
 - Фокус: где хранить тело paste, expiry, id generation, гонки при burn-after-read.
 
@@ -100,13 +82,3 @@ system-design-playbook/
 - Concurrent read semantics
 
 ---
-
-## Диаграммы
-
-- В образцах — **Mermaid** (версионируется в git, рендерится на GitHub).
-- В своих раундах можно дополнительно класть **PNG из Miro** в `diagrams/`.
-
-## Связь с обучением
-
-Playbook = практика Large Scale Design / Interview Mastery.  
-Теория эволюции систем (Foundation → DB → Cache → Scale → Messaging → …) — в отдельном learning-треке; сюда сдаём законченные дизайн-кейсы.
