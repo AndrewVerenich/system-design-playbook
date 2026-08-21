@@ -1,9 +1,7 @@
 # Система: Pastebin
 
 > Раунд: 01  
-> Автор: Andrey Verenich  
 > Статус: **reviewed** (финальный review в [`REVIEW.md`](./REVIEW.md))  
-> Timebox: без жёсткого лимита (первый свой раунд)
 
 ## 1. Уточняющие вопросы
 

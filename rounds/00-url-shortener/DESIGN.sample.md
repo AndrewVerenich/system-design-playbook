@@ -1,9 +1,7 @@
 # System: URL Shortener
 
 > Round: 00  
-> Author: sample (reference)  
 > Status: **accepted | sample**  
-> Timebox: ориентир для драфта ~45–60 min; этот документ — полная «эталонная» версия после уточнений
 
 Это **образец**. На следующих раундах пиши свой `DESIGN.md` без подсматривания в идеале до первого review.
 
