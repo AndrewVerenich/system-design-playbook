@@ -10,7 +10,9 @@
 Краткий список — ссылки ведут к полному описанию в [разделе ниже](#rounds-overview).
 
 0. [url-shortener](#0-url-shortener) — сокращение ссылок *(образец)*  
-1. [pastebin](#1-pastebin) — текстовые paste, TTL, read/write path 
+1. [pastebin](#1-pastebin) — текстовые paste, TTL, read/write path  
+2. [webhook-dispatcher](#2-webhook-dispatcher) — доставка webhooks, retry, async fan-out **← текущий раунд**  
+3. *(далее: rate limiter, notification service, chat, …)*
 
 ---
 
@@ -22,7 +24,24 @@
 4. **Revise** — правка до accepted-версии.
 
 Правило: на новых раундах сначала свой вариант, потом разбор.  
-**Round 00** — полный образец. **Round 01** — твоё первое задание.
+**Round 00** — образец. **Round 01** — Pastebin (reviewed). **Round 02** — Webhook Dispatcher.
+
+## Структура репозитория
+
+```text
+system-design-playbook/
+├── README.md
+├── _template/
+│   └── DESIGN.md
+└── rounds/
+    ├── 00-url-shortener/   ← образец
+    ├── 01-pastebin/
+    └── 02-webhook-dispatcher/  ← текущее задание
+        ├── BRIEF.md
+        ├── DESIGN.md
+        ├── diagrams/
+        └── REVIEW.md
+```
 
 Шаблон: [`_template/DESIGN.md`](./_template/DESIGN.md).
 
@@ -65,12 +84,13 @@
 Проектирование Pastebin-like сервиса: сохранение текста, выдача по короткому id, TTL, опционально burn-after-read.
 
 **Описание:**
+- Первое **самостоятельное** задание (без готового sample-решения).
 - Простая система для отработки каркаса интервью end-to-end.
 - Фокус: где хранить тело paste, expiry, id generation, гонки при burn-after-read.
 
 **Артефакты:**
 - [BRIEF.md](./rounds/01-pastebin/BRIEF.md) — условие раунда
-- [DESIGN.md](./rounds/01-pastebin/DESIGN.md) — дизайн
+- [DESIGN.md](./rounds/01-pastebin/DESIGN.md) — твой дизайн
 - [REVIEW.md](./rounds/01-pastebin/REVIEW.md) — review после сдачи
 
 **Статус:** reviewed — см. [REVIEW.md](./rounds/01-pastebin/REVIEW.md)
@@ -82,3 +102,36 @@
 - Concurrent read semantics
 
 ---
+
+### 2. [webhook-dispatcher](./rounds/02-webhook-dispatcher/BRIEF.md)
+
+Сервис доставки webhooks: регистрация endpoint’ов, приём событий, async fan-out, retry при сбоях внешнего HTTP.
+
+**Описание:**
+- Второй самостоятельный раунд после Pastebin.
+- Фокус: не блокировать accept на чужом HTTP; retries; изоляция медленных потребителей.
+
+**Артефакты:**
+- [BRIEF.md](./rounds/02-webhook-dispatcher/BRIEF.md) — условие раунда
+- [DESIGN.md](./rounds/02-webhook-dispatcher/DESIGN.md) — твой дизайн
+- [REVIEW.md](./rounds/02-webhook-dispatcher/REVIEW.md) — review после сдачи
+
+**Статус:** brief ready — обсуждение / дизайн
+
+**Фокус компетенций:**
+- Async processing
+- Retry / backoff / timeouts
+- At-least-once delivery
+- Failure isolation (slow/down consumers)
+
+---
+
+## Диаграммы
+
+- В образцах — **Mermaid** (версионируется в git, рендерится на GitHub).
+- В своих раундах можно дополнительно класть **PNG из Miro** в `diagrams/`.
+
+## Связь с обучением
+
+Playbook = практика Large Scale Design / Interview Mastery.  
+Теория эволюции систем (Foundation → DB → Cache → Scale → Messaging → …) — в отдельном learning-треке; сюда сдаём законченные дизайн-кейсы.
