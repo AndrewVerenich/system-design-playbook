@@ -11,7 +11,6 @@
 
 1. [pastebin](#1-pastebin) — текстовые paste, TTL, read/write path  
 2. [webhook-dispatcher](#2-webhook-dispatcher) — доставка webhooks, retry, async fan-out  
-3. *(далее: rate limiter, notification service, chat, …)*
 
 ---
 
@@ -35,7 +34,6 @@
 Проектирование Pastebin-like сервиса: сохранение текста, выдача по короткому id, TTL, опционально burn-after-read.
 
 **Описание:**
-- Первое самостоятельное задание.
 - Простая система для отработки каркаса интервью end-to-end.
 - Фокус: где хранить тело paste, expiry, id generation, cache, read-your-writes.
 
@@ -44,8 +42,6 @@
 - [DESIGN.md](./rounds/01-pastebin/DESIGN.md) — дизайн
 - [REVIEW.md](./rounds/01-pastebin/REVIEW.md) — review
 - [diagrams/](./rounds/01-pastebin/diagrams/) — схемы
-
-**Статус:** reviewed — см. [REVIEW.md](./rounds/01-pastebin/REVIEW.md)
 
 **Фокус компетенций:**
 - Interview structure end-to-end
@@ -60,7 +56,6 @@
 Сервис доставки webhooks: регистрация endpoint’ов, приём событий, async fan-out, retry при сбоях внешнего HTTP.
 
 **Описание:**
-- Второй самостоятельный раунд после Pastebin.
 - Accept: `POST /internal/events` → MySQL → `202` (не ждём чужой HTTP).
 - Pipeline: CDC → `topic.event` → event-processor (fan-out) → N× `topic.notification` → http worker.
 - Outbound: HMAC, idempotency, retry/DLQ; регистрация webhooks по apiKey.
@@ -70,8 +65,6 @@
 - [DESIGN.md](./rounds/02-webhook-dispatcher/DESIGN.md) — дизайн
 - [REVIEW.md](./rounds/02-webhook-dispatcher/REVIEW.md) — review
 - [diagrams/](./rounds/02-webhook-dispatcher/diagrams/) — схемы
-
-**Статус:** reviewed — см. [REVIEW.md](./rounds/02-webhook-dispatcher/REVIEW.md)
 
 **Фокус компетенций:**
 - Async processing / outbox + CDC
