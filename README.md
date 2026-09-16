@@ -78,8 +78,3 @@
 ## Диаграммы
 
 Схемы — в `rounds/<round>/diagrams/` и вставляются в `DESIGN.md` соответствующего раунда.
-
-## Связь с обучением
-
-Playbook = практика Large Scale Design / Interview Mastery.  
-Теория эволюции систем (Foundation → DB → Cache → Scale → Messaging → …) — в отдельном learning-треке; сюда сдаём законченные дизайн-кейсы.
