@@ -9,9 +9,8 @@
 
 Краткий список — ссылки ведут к полному описанию в [разделе ниже](#rounds-overview).
 
-0. [url-shortener](#0-url-shortener) — сокращение ссылок *(образец)*  
 1. [pastebin](#1-pastebin) — текстовые paste, TTL, read/write path  
-2. [webhook-dispatcher](#2-webhook-dispatcher) — доставка webhooks, retry, async fan-out **← текущий раунд**  
+2. [webhook-dispatcher](#2-webhook-dispatcher) — доставка webhooks, retry, async fan-out  
 3. *(далее: rate limiter, notification service, chat, …)*
 
 ---
@@ -19,29 +18,9 @@
 ## Как проходить раунд
 
 1. **Brief** — задача и ограничения (как на интервью).
-2. **Draft** — свой `DESIGN.md` + схемы (Miro PNG и/или Mermaid).
+2. **Draft** — свой `DESIGN.md` + схема в `diagrams/`.
 3. **Review** — разбор: сильные стороны, дыры, follow-up вопросы.
 4. **Revise** — правка до accepted-версии.
-
-Правило: на новых раундах сначала свой вариант, потом разбор.  
-**Round 00** — образец. **Round 01** — Pastebin (reviewed). **Round 02** — Webhook Dispatcher.
-
-## Структура репозитория
-
-```text
-system-design-playbook/
-├── README.md
-├── _template/
-│   └── DESIGN.md
-└── rounds/
-    ├── 00-url-shortener/   ← образец
-    ├── 01-pastebin/
-    └── 02-webhook-dispatcher/  ← текущее задание
-        ├── BRIEF.md
-        ├── DESIGN.md
-        ├── diagrams/
-        └── REVIEW.md
-```
 
 Шаблон: [`_template/DESIGN.md`](./_template/DESIGN.md).
 
@@ -51,47 +30,20 @@ system-design-playbook/
 
 ## Раунды
 
-### 0. [url-shortener](./rounds/00-url-shortener/BRIEF.md)
-
-Проектирование сервиса сокращения URL (TinyURL / bit.ly-like) с упором на read-heavy redirect path.
-
-**Описание:**
-- Clarifying questions, FR/NFR, back-of-the-envelope расчёты.
-- High-level архитектура: Write API / Redirect API / cache / primary store.
-- Генерация short code (Snowflake → Base62), custom alias, коллизии.
-- Cache-aside + защита от stampede, 301 vs 302.
-- Масштабирование, failure modes, явные trade-offs.
-- Mermaid-диаграммы: контекст, write/read path, data model.
-
-**Артефакты:**
-- [BRIEF.md](./rounds/00-url-shortener/BRIEF.md) — условие раунда
-- [DESIGN.sample.md](./rounds/00-url-shortener/DESIGN.sample.md) — **образец полного дизайна** (RFC / design doc стиль)
-- [adr/](./rounds/00-url-shortener/adr/) — примеры **ADR** по ключевым решениям
-- [REVIEW.md](./rounds/00-url-shortener/REVIEW.md) — образец review
-- [diagrams/](./rounds/00-url-shortener/diagrams/) — схемы
-
-**Фокус компетенций:**
-- Capacity estimation
-- KV access pattern + caching
-- Unique ID generation
-- Hot key / viral traffic
-- Consistency vs latency на redirect path
-
----
-
 ### 1. [pastebin](./rounds/01-pastebin/BRIEF.md)
 
 Проектирование Pastebin-like сервиса: сохранение текста, выдача по короткому id, TTL, опционально burn-after-read.
 
 **Описание:**
-- Первое **самостоятельное** задание (без готового sample-решения).
+- Первое самостоятельное задание.
 - Простая система для отработки каркаса интервью end-to-end.
-- Фокус: где хранить тело paste, expiry, id generation, гонки при burn-after-read.
+- Фокус: где хранить тело paste, expiry, id generation, cache, read-your-writes.
 
 **Артефакты:**
 - [BRIEF.md](./rounds/01-pastebin/BRIEF.md) — условие раунда
 - [DESIGN.md](./rounds/01-pastebin/DESIGN.md) — дизайн
-- [REVIEW.md](./rounds/01-pastebin/REVIEW.md) — review после сдачи
+- [REVIEW.md](./rounds/01-pastebin/REVIEW.md) — review
+- [diagrams/](./rounds/01-pastebin/diagrams/) — схемы
 
 **Статус:** reviewed — см. [REVIEW.md](./rounds/01-pastebin/REVIEW.md)
 
@@ -109,16 +61,15 @@ system-design-playbook/
 
 **Описание:**
 - Второй самостоятельный раунд после Pastebin.
-- Accept: `POST /internal/events` → MySQL (per-tenant shard) → `202` (не ждём чужой HTTP).
-- Pipeline: CDC (Debezium) → `topic.event` → **event-processor** (select webhooks + fan-out) → N× `topic.notification` → **http worker**.
-- Outbound: `X-Signature`, `X-Idempotency-Key`; retry/backoff; DLQ; update статуса в MySQL.
-- Регистрация: `POST /webhooks` + `X-Api-Key` → signingSecret в ответе.
+- Accept: `POST /internal/events` → MySQL → `202` (не ждём чужой HTTP).
+- Pipeline: CDC → `topic.event` → event-processor (fan-out) → N× `topic.notification` → http worker.
+- Outbound: HMAC, idempotency, retry/DLQ; регистрация webhooks по apiKey.
 
 **Артефакты:**
 - [BRIEF.md](./rounds/02-webhook-dispatcher/BRIEF.md) — условие раунда
 - [DESIGN.md](./rounds/02-webhook-dispatcher/DESIGN.md) — дизайн
-- [REVIEW.md](./rounds/02-webhook-dispatcher/REVIEW.md) — review после сдачи
-- [diagrams/high-level.jpg](./rounds/02-webhook-dispatcher/diagrams/high-level.jpg) — high-level схема
+- [REVIEW.md](./rounds/02-webhook-dispatcher/REVIEW.md) — review
+- [diagrams/](./rounds/02-webhook-dispatcher/diagrams/) — схемы
 
 **Статус:** reviewed — см. [REVIEW.md](./rounds/02-webhook-dispatcher/REVIEW.md)
 
@@ -127,14 +78,13 @@ system-design-playbook/
 - Fan-out (1 event → N notifications)
 - Retry / backoff / timeouts / DLQ
 - At-least-once + idempotency
-- Failure isolation (slow/down consumers, per-tenant topics)
+- Failure isolation
 
 ---
 
 ## Диаграммы
 
-- Схемы раундов — в `rounds/*/diagrams/` (Miro → PNG/JPG), плюс превью в карточках раундов ниже / выше.
-- В образце URL Shortener также есть Mermaid внутри `DESIGN.sample.md`.
+Схемы — в `rounds/<round>/diagrams/` и вставляются в `DESIGN.md` соответствующего раунда.
 
 ## Связь с обучением
 
