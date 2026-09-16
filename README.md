@@ -90,7 +90,7 @@ system-design-playbook/
 
 **Артефакты:**
 - [BRIEF.md](./rounds/01-pastebin/BRIEF.md) — условие раунда
-- [DESIGN.md](./rounds/01-pastebin/DESIGN.md) — твой дизайн
+- [DESIGN.md](./rounds/01-pastebin/DESIGN.md) — дизайн
 - [REVIEW.md](./rounds/01-pastebin/REVIEW.md) — review после сдачи
 
 **Статус:** reviewed — см. [REVIEW.md](./rounds/01-pastebin/REVIEW.md)
@@ -109,27 +109,32 @@ system-design-playbook/
 
 **Описание:**
 - Второй самостоятельный раунд после Pastebin.
-- Фокус: не блокировать accept на чужом HTTP; retries; изоляция медленных потребителей.
+- Accept: `POST /internal/events` → MySQL (per-tenant shard) → `202` (не ждём чужой HTTP).
+- Pipeline: CDC (Debezium) → `topic.event` → **event-processor** (select webhooks + fan-out) → N× `topic.notification` → **http worker**.
+- Outbound: `X-Signature`, `X-Idempotency-Key`; retry/backoff; DLQ; update статуса в MySQL.
+- Регистрация: `POST /webhooks` + `X-Api-Key` → signingSecret в ответе.
 
 **Артефакты:**
 - [BRIEF.md](./rounds/02-webhook-dispatcher/BRIEF.md) — условие раунда
-- [DESIGN.md](./rounds/02-webhook-dispatcher/DESIGN.md) — твой дизайн
+- [DESIGN.md](./rounds/02-webhook-dispatcher/DESIGN.md) — дизайн
 - [REVIEW.md](./rounds/02-webhook-dispatcher/REVIEW.md) — review после сдачи
+- [diagrams/high-level.jpg](./rounds/02-webhook-dispatcher/diagrams/high-level.jpg) — high-level схема
 
-**Статус:** brief ready — обсуждение / дизайн
+**Статус:** reviewed — см. [REVIEW.md](./rounds/02-webhook-dispatcher/REVIEW.md)
 
 **Фокус компетенций:**
-- Async processing
-- Retry / backoff / timeouts
-- At-least-once delivery
-- Failure isolation (slow/down consumers)
+- Async processing / outbox + CDC
+- Fan-out (1 event → N notifications)
+- Retry / backoff / timeouts / DLQ
+- At-least-once + idempotency
+- Failure isolation (slow/down consumers, per-tenant topics)
 
 ---
 
 ## Диаграммы
 
-- В образцах — **Mermaid** (версионируется в git, рендерится на GitHub).
-- В своих раундах можно дополнительно класть **PNG из Miro** в `diagrams/`.
+- Схемы раундов — в `rounds/*/diagrams/` (Miro → PNG/JPG), плюс превью в карточках раундов ниже / выше.
+- В образце URL Shortener также есть Mermaid внутри `DESIGN.sample.md`.
 
 ## Связь с обучением
 
