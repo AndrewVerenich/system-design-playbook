@@ -109,8 +109,8 @@ Distributed rate limiter для API Gateway / сервисов: allow/deny по 
 |---|---------|--------|
 | 4 | **Payment System** | идемпотентность платежей, ledger, exactly-once эффекты, reconciliation, PSP/webhooks, consistency vs latency |
 | 5 | **Job Scheduler** | cron/delayed jobs, distributed locks, at-least-once execution, retry/backoff, partitioning очереди, clock skew |
+| 6 | **Booking / Reservation** | hold → confirm, TTL hold, inventory/slots, overbooking vs exact, optimistic locking, payment handoff, calendar concurrency |
 
-Оба хорошо стыкуются с уже пройденным: webhooks → payment callbacks; rate limiter / Redis → scheduler locks; у тебя в platform уже есть `distributed-task-scheduler` и banking/saga-кейсы.
 
 ---
 
