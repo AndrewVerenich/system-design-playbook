@@ -11,6 +11,8 @@
 
 1. [pastebin](#1-pastebin) — текстовые paste, TTL, read/write path  
 2. [webhook-dispatcher](#2-webhook-dispatcher) — доставка webhooks, retry, async fan-out  
+3. [rate-limiter](#3-rate-limiter) — distributed rate limiting **← текущий раунд**  
+4. *(идеи: [payment system](#идеи-следующих-раундов), [job scheduler](#идеи-следующих-раундов), …)*
 
 ---
 
@@ -72,6 +74,43 @@
 - Retry / backoff / timeouts / DLQ
 - At-least-once + idempotency
 - Failure isolation
+
+---
+
+### 3. [rate-limiter](./rounds/03-rate-limiter/BRIEF.md)
+
+Distributed rate limiter для API Gateway / сервисов: allow/deny по ключу (user, IP, apiKey) с окном и лимитом.
+
+**Описание:**
+- Hot-path decide, алгоритмы (token/leaky bucket, fixed/sliding window), Redis, multi-instance.
+- Фокус: latency, atomicity, hot keys, fail-open vs fail-closed.
+
+**Артефакты:**
+- [BRIEF.md](./rounds/03-rate-limiter/BRIEF.md) — условие раунда
+- [DESIGN.md](./rounds/03-rate-limiter/DESIGN.md) — дизайн
+- [REVIEW.md](./rounds/03-rate-limiter/REVIEW.md) — review
+- [diagrams/](./rounds/03-rate-limiter/diagrams/) — схемы
+
+**Статус:** brief ready — обсуждение / дизайн
+
+**Фокус компетенций:**
+- Rate limiting algorithms
+- Distributed counters (Redis)
+- Hot path latency
+- Failure modes (Redis down)
+
+---
+
+## Идеи следующих раундов
+
+Кандидаты после Rate Limiter (ещё без BRIEF — выберем и заведём папку):
+
+| # | Система | Фокус |
+|---|---------|--------|
+| 4 | **Payment System** | идемпотентность платежей, ledger, exactly-once эффекты, reconciliation, PSP/webhooks, consistency vs latency |
+| 5 | **Job Scheduler** | cron/delayed jobs, distributed locks, at-least-once execution, retry/backoff, partitioning очереди, clock skew |
+
+Оба хорошо стыкуются с уже пройденным: webhooks → payment callbacks; rate limiter / Redis → scheduler locks; у тебя в platform уже есть `distributed-task-scheduler` и banking/saga-кейсы.
 
 ---
 
